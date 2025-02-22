@@ -1,27 +1,27 @@
-import { openai } from '@ai-sdk/openai';
-import { fireworks } from '@ai-sdk/fireworks';
+import { createOpenRouter } from '@openrouter/ai-sdk-provider';
+import { perplexity } from '@ai-sdk/perplexity';
 import {
   customProvider,
   extractReasoningMiddleware,
   wrapLanguageModel,
 } from 'ai';
 
-export const DEFAULT_CHAT_MODEL: string = 'chat-model-small';
+export const DEFAULT_CHAT_MODEL: string = 'deepseek-distill';
+
+const openrouter = createOpenRouter({
+  apiKey: process.env.OPENROUTER_API_KEY || '',
+});
 
 export const myProvider = customProvider({
   languageModels: {
-    'chat-model-small': openai('gpt-4o-mini'),
-    'chat-model-large': openai('gpt-4o'),
-    'chat-model-reasoning': wrapLanguageModel({
-      model: fireworks('accounts/fireworks/models/deepseek-r1'),
-      middleware: extractReasoningMiddleware({ tagName: 'think' }),
-    }),
-    'title-model': openai('gpt-4-turbo'),
-    'artifact-model': openai('gpt-4o-mini'),
-  },
-  imageModels: {
-    'small-model': openai.image('dall-e-2'),
-    'large-model': openai.image('dall-e-3'),
+    'deepseek-distill': openrouter('deepseek/deepseek-r1-distill-llama-70b'),
+    'qwen-turbo': openrouter('qwen/qwen-turbo'),
+    'o3-mini-high': openrouter('openai/o3-mini-high'),
+    'gpt4-latest': openrouter('openai/chatgpt-4o-latest'),
+    'gpt4-mini': openrouter('openai/gpt-4o-mini'),
+    'claude-sonnet': openrouter('anthropic/claude-3.5-sonnet'),
+    'gemini-flash': openrouter('google/gemini-2.0-flash-001'),
+    'sonar-pro': perplexity('sonar-pro'),
   },
 });
 
@@ -33,18 +33,43 @@ interface ChatModel {
 
 export const chatModels: Array<ChatModel> = [
   {
-    id: 'chat-model-small',
-    name: 'Small model',
-    description: 'Small model for fast, lightweight tasks',
+    id: 'deepseek-distill',
+    name: 'DeepSeek Distill',
+    description: 'Distilled 70B model, balanced performance',
   },
   {
-    id: 'chat-model-large',
-    name: 'Large model',
-    description: 'Large model for complex, multi-step tasks',
+    id: 'qwen-turbo',
+    name: 'Qwen Turbo',
+    description: 'Fast and efficient for general tasks',
   },
   {
-    id: 'chat-model-reasoning',
-    name: 'Reasoning model',
-    description: 'Uses advanced reasoning',
+    id: 'o3-mini-high',
+    name: 'O3 Mini High',
+    description: 'Optimized mini model with high performance',
+  },
+  {
+    id: 'gpt4-latest',
+    name: 'GPT-4 Latest',
+    description: 'Latest GPT-4 model for advanced tasks',
+  },
+  {
+    id: 'gpt4-mini',
+    name: 'GPT-4 Mini',
+    description: 'Efficient GPT-4 model for quick responses',
+  },
+  {
+    id: 'claude-sonnet',
+    name: 'Claude Sonnet',
+    description: 'Claude 3.5 Sonnet for balanced performance',
+  },
+  {
+    id: 'gemini-flash',
+    name: 'Gemini Flash',
+    description: 'Fast Gemini model for quick responses',
+  },
+  {
+    id: 'sonar-pro',
+    name: 'Sonar Pro',
+    description: 'Perplexity Sonar Pro with real-time web search',
   },
 ];
